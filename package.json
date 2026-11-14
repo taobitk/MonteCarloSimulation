@@ -1,0 +1,44 @@
+{
+  "name": "montecarlosimulation",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#lib": "./src/lib/index.js",
+    "#lib/*": "./src/lib/*"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "wrangler types --check && vite build",
+    "preview": "wrangler pages dev .svelte-kit/cloudflare --port 4173",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "wrangler types --check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && npm run check:lines",
+    "check:lines": "py \"C:\\Users\\8hung\\.gemini\\config\\skills\\anti-monolith-guard\\scripts\\check_lines.py\"",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "test:e2e": "playwright install && playwright test",
+    "test": "npm run test:e2e",
+    "gen": "wrangler types",
+    "wasm:build": "wasm-pack build wasm-engine --target web --out-dir ../src/lib/wasm",
+    "wasm:dev": "wasm-pack build wasm-engine --target web --dev --out-dir ../src/lib/wasm",
+    "cli:dca": "cargo run --release --manifest-path wasm-engine/Cargo.toml --bin dca_cli --"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@sveltejs/adapter-cloudflare": "^8.0.0",
+    "@sveltejs/kit": "^3.0.0",
+    "@sveltejs/vite-plugin-svelte": "^7.2.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "lucide-svelte": "^1.0.1",
+    "prettier": "^3.8.3",
+    "prettier-plugin-svelte": "^4.1.0",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "svelte": "^5.57.2",
+    "svelte-check": "^4.6.0",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.0",
+    "wrangler": "^4.97.0"
+  }
+}

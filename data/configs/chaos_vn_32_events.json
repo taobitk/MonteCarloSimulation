@@ -1,0 +1,772 @@
+[
+  {
+    "id": "macro_volcker_hike",
+    "name": "Chu kỳ Siết lãi suất chống lạm phát & tỷ giá (2011 / 2022)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.012 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Tightening_Standard",
+        "weight": 0.70,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Tiền gửi", "op": "Add", "value": { "dist": "Uniform", "min": 0.018, "max": 0.032 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Normal", "mean": -0.12, "std": 0.03, "min": -0.20, "max": -0.06 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.09, "max": -0.04 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.28, "max": -0.14 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.07, "max": -0.02 } }
+        ],
+        "cascades": [
+          { "target_event_id": "macro_fx_devaluation", "prob": 0.25, "delay_min_days": 20, "delay_max_days": 90 },
+          { "target_event_id": "fin_cre_credit_default", "prob": 0.20, "delay_min_days": 60, "delay_max_days": 180 }
+        ]
+      },
+      {
+        "name": "Tightening_Severe",
+        "weight": 0.30,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 360, "target": "AssetMu", "asset": "Tiền gửi", "op": "Add", "value": { "dist": "Uniform", "min": 0.035, "max": 0.060 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.26, "max": -0.16 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.15, "max": -0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.45, "max": -0.28 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.16, "max": -0.06 } }
+        ],
+        "cascades": [
+          { "target_event_id": "macro_fx_devaluation", "prob": 0.35, "delay_min_days": 15, "delay_max_days": 60 },
+          { "target_event_id": "fin_domestic_re_bond_freeze", "prob": 0.30, "delay_min_days": 45, "delay_max_days": 150 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "macro_sovereign_downgrade",
+    "name": "Bất ổn Nợ công toàn cầu & Sốc trái phiếu",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.008 }, { "from_year": 15.0, "annual_prob": 0.015 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Gold_SafeHaven",
+        "weight": 0.75,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.15, "max": -0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.18, "max": -0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.05, "max": 0.12 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Cổ phiếu", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.45 } }
+        ],
+        "cascades": [{ "target_event_id": "fin_liquidity_crunch", "prob": 0.25, "delay_min_days": 10, "delay_max_days": 30 }]
+      },
+      {
+        "name": "Bond_Panic",
+        "weight": 0.25,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Normal", "mean": -0.20, "std": 0.04, "min": -0.28, "max": -0.12 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.25, "max": -0.12 } },
+          { "mode": "Temporary", "duration_days": 45, "target": "CrisisCorrActive", "op": "Set", "value": 1.0 }
+        ],
+        "cascades": [{ "target_event_id": "fin_liquidity_crunch", "prob": 0.40, "delay_min_days": 5, "delay_max_days": 20 }]
+      }
+    ]
+  },
+  {
+    "id": "macro_stagflation",
+    "name": "Lạm phát đình trệ kéo dài (Stagflation)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.008 }],
+    "cooldown_days": 1512,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Prolonged_Stagflation",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.14, "max": -0.07 } },
+          { "mode": "Temporary", "duration_days": 360, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.10, "max": -0.05 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.22, "max": -0.10 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.05, "max": 0.12 } },
+          { "mode": "Temporary", "duration_days": 360, "target": "AssetMu", "asset": "Vàng", "op": "Add", "value": { "dist": "Uniform", "min": 0.03, "max": 0.06 } },
+          { "mode": "Temporary", "duration_days": 360, "target": "AssetMu", "asset": "Tiền gửi", "op": "Add", "value": { "dist": "Uniform", "min": 0.01, "max": 0.025 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "PeriodicCash", "op": "Mul", "value": { "dist": "Uniform", "min": 0.72, "max": 0.88 } }
+        ],
+        "cascades": [{ "target_event_id": "macro_volcker_hike", "prob": 0.30, "delay_min_days": 60, "delay_max_days": 180 }]
+      }
+    ]
+  },
+  {
+    "id": "macro_fx_devaluation",
+    "name": "Áp lực Tỷ giá USD/VND & Khối ngoại rút ròng",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.015 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 3,
+    "scenarios": [
+      {
+        "name": "VND_Defense_And_Gold_Bid",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetMu", "asset": "Tiền gửi", "op": "Add", "value": { "dist": "Uniform", "min": 0.010, "max": 0.025 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Normal", "mean": -0.07, "std": 0.02, "min": -0.12, "max": -0.03 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.03, "max": 0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.03, "max": 0.09 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "macro_qt_shock",
+    "name": "Rút thanh khoản toàn cầu (QT Shock)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.012 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Global_Liquidity_Drain",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.15, "max": -0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.28, "max": -0.14 } },
+          { "mode": "Temporary", "duration_days": 63, "target": "CrisisCorrActive", "op": "Set", "value": 1.0 },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Cổ phiếu", "op": "Mul", "value": { "dist": "Uniform", "min": 1.20, "max": 1.40 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Crypto", "op": "Mul", "value": { "dist": "Uniform", "min": 1.20, "max": 1.40 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "fin_bank_run",
+    "name": "Rút tiền hàng loạt / Kiểm soát đặc biệt ngân hàng (kiểu SCB / SVB)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.005 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "SBV_Contained_Liquidity_Support",
+        "weight": 0.75,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.16, "max": -0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.12, "max": 0.05 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.04, "max": 0.10 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Cổ phiếu", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.50 } }
+        ],
+        "cascades": [
+          { "target_event_id": "fin_liquidity_crunch", "prob": 0.45, "delay_min_days": 5, "delay_max_days": 20 },
+          { "target_event_id": "macro_qe_pivot_rescue", "prob": 0.55, "delay_min_days": 45, "delay_max_days": 150 }
+        ]
+      },
+      {
+        "name": "Severe_Banking_Stress",
+        "weight": 0.25,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Tiền gửi", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.05, "max": -0.02 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.24, "max": -0.14 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.06, "max": 0.12 } },
+          { "mode": "Temporary", "duration_days": 21, "target": "RebalanceEnabled", "op": "Set", "value": 0.0 }
+        ],
+        "cascades": [
+          { "target_event_id": "fin_liquidity_crunch", "prob": 0.65, "delay_min_days": 3, "delay_max_days": 14 },
+          { "target_event_id": "macro_qe_pivot_rescue", "prob": 0.70, "delay_min_days": 30, "delay_max_days": 90 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fin_liquidity_crunch",
+    "name": "Đóng băng thanh khoản & Nới rộng Spread thị trường",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.006 }],
+    "cooldown_days": 756,
+    "max_triggers_per_sim": 3,
+    "scenarios": [
+      {
+        "name": "Spread_Blowout",
+        "weight": 0.65,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 35, "target": "SellFee", "op": "Set", "value": { "dist": "Uniform", "min": 0.045, "max": 0.095 } },
+          { "mode": "Temporary", "duration_days": 35, "target": "CrisisCorrActive", "op": "Set", "value": 1.0 }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Rebalance_Freeze_And_Slippage",
+        "weight": 0.35,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 30, "target": "RebalanceEnabled", "op": "Set", "value": 0.0 },
+          { "mode": "Temporary", "duration_days": 45, "target": "SellFee", "op": "Set", "value": { "dist": "Uniform", "min": 0.06, "max": 0.11 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "fin_cre_credit_default",
+    "name": "Vỡ nợ Tín dụng tư nhân / BĐS Thương mại toàn cầu",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.008 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "CRE_Default_Wave",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.18, "max": -0.10 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.09, "max": -0.04 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.20, "max": -0.10 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.03, "max": 0.08 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Cổ phiếu", "op": "Mul", "value": { "dist": "Uniform", "min": 1.20, "max": 1.40 } }
+        ],
+        "cascades": [
+          { "target_event_id": "fin_bank_run", "prob": 0.35, "delay_min_days": 14, "delay_max_days": 45 },
+          { "target_event_id": "macro_qe_pivot_rescue", "prob": 0.40, "delay_min_days": 90, "delay_max_days": 210 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fin_margin_call_cascade",
+    "name": "Giải chấp đòn bẩy đồng loạt (Force Sell / Margin Call)",
+    "prob_schedule": [],
+    "drawdown_trigger": { "asset": "Cổ phiếu", "drop_from_peak_pct": 0.32 },
+    "cooldown_days": 756,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Forced_Deleveraging",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.10, "max": -0.05 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.22, "max": -0.10 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.08, "max": -0.03 } },
+          { "mode": "Temporary", "duration_days": 45, "target": "CrisisCorrActive", "op": "Set", "value": 1.0 },
+          { "mode": "Temporary", "duration_days": 90, "target": "AssetSigma", "asset": "Cổ phiếu", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.50 } }
+        ],
+        "cascades": [
+          { "target_event_id": "fin_liquidity_crunch", "prob": 0.30, "delay_min_days": 3, "delay_max_days": 15 },
+          { "target_event_id": "p_job_loss", "prob": 0.20, "delay_min_days": 60, "delay_max_days": 150 },
+          { "target_event_id": "tail_double_dip", "prob": 0.15, "delay_min_days": 180, "delay_max_days": 320 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "asset_crypto_winter",
+    "name": "Mùa đông Crypto & Sập sàn / Stablecoin lớn",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.018 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 3,
+    "scenarios": [
+      {
+        "name": "Cyclical_Crypto_Winter",
+        "weight": 0.70,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.45, "max": -0.25 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Crypto", "op": "Add", "value": { "dist": "Uniform", "min": -0.28, "max": -0.15 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetSigma", "asset": "Crypto", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.45 } }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Exchange_Contagion_Tail",
+        "weight": 0.30,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Pareto", "scale": 0.30, "alpha": 2.6, "sign": -1.0, "max_abs": 0.62 } },
+          { "mode": "Temporary", "duration_days": 300, "target": "AssetMu", "asset": "Crypto", "op": "Add", "value": { "dist": "Uniform", "min": -0.35, "max": -0.20 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "asset_crypto_ban",
+    "name": "Siết pháp lý & Đánh thuế nặng giao dịch Crypto",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.010 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Regulatory_Clampdown",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.38, "max": -0.20 } },
+          { "mode": "Temporary", "duration_days": 60, "target": "SellFee", "op": "Add", "value": { "dist": "Uniform", "min": 0.005, "max": 0.012 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.02, "max": 0.06 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "asset_exchange_hack",
+    "name": "Lỗi bảo mật ví / Sàn đóng băng rút tiền",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.012 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Partial_Freeze",
+        "weight": 0.75,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.18, "max": -0.07 } },
+          { "mode": "Temporary", "duration_days": 15, "target": "RebalanceEnabled", "op": "Set", "value": 0.0 }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Major_Hack",
+        "weight": 0.25,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.35, "max": -0.20 } },
+          { "mode": "Temporary", "duration_days": 30, "target": "RebalanceEnabled", "op": "Set", "value": 0.0 }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "asset_ai_tech_bust",
+    "name": "Vỡ bong bóng Định giá Công nghệ / Tài sản tăng trưởng",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.012 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Growth_DeRating",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.22, "max": -0.12 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.10, "max": -0.05 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.30, "max": -0.15 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.02, "max": 0.06 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "asset_gold_paper_squeeze",
+    "name": "Bán tháo Vàng bù thanh khoản / Chu kỳ NHTW xả dự trữ",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.015 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Dash_For_Cash_2020",
+        "weight": 0.60,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.16, "max": -0.09 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Vàng", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.45 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetMu", "asset": "Vàng", "op": "Add", "value": { "dist": "Uniform", "min": 0.04, "max": 0.10 } }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Central_Bank_Selloff_2013",
+        "weight": 0.40,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.24, "max": -0.14 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Vàng", "op": "Add", "value": { "dist": "Uniform", "min": -0.12, "max": -0.05 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "asset_tax_regime_shift",
+    "name": "Thay đổi Thuế giao dịch / Phí chứng khoán & Vàng dài hạn",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.004 }, { "from_year": 10.0, "annual_prob": 0.012 }],
+    "cooldown_days": 2520,
+    "max_triggers_per_sim": 1,
+    "scenarios": [
+      {
+        "name": "Permanent_Fee_Hike",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Permanent", "target": "SellFee", "op": "Add", "value": { "dist": "Uniform", "min": 0.003, "max": 0.007 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "geo_strait_conflict",
+    "name": "Xung đột địa chính trị & Eo biển hàng hải chiến lược",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.015 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 3,
+    "scenarios": [
+      {
+        "name": "Geopolitical_Gold_Bid",
+        "weight": 0.75,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.16, "max": -0.07 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.18, "max": -0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.06, "max": 0.14 } }
+        ],
+        "cascades": [{ "target_event_id": "geo_energy_crunch", "prob": 0.30, "delay_min_days": 30, "delay_max_days": 90 }]
+      },
+      {
+        "name": "Global_Panic_Selloff",
+        "weight": 0.25,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.24, "max": -0.15 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.28, "max": -0.15 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.10, "max": -0.04 } },
+          { "mode": "Temporary", "duration_days": 45, "target": "CrisisCorrActive", "op": "Set", "value": 1.0 }
+        ],
+        "cascades": [{ "target_event_id": "geo_energy_crunch", "prob": 0.45, "delay_min_days": 20, "delay_max_days": 60 }]
+      }
+    ]
+  },
+  {
+    "id": "geo_tariff_war",
+    "name": "Chiến tranh Thương mại & Rào cản thuế quan xuất khẩu",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.012 }],
+    "cooldown_days": 1512,
+    "max_triggers_per_sim": 1,
+    "scenarios": [
+      {
+        "name": "Medium_Term_Disruption",
+        "weight": 0.70,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.14, "max": -0.07 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.07, "max": -0.03 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.03, "max": 0.07 } }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Permanent_Trade_Fragmentation",
+        "weight": 0.30,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.18, "max": -0.10 } },
+          { "mode": "Permanent", "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.006, "max": -0.002 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "geo_fx_sanctions",
+    "name": "Cấm vận tài chính & Phi đô la hóa dự trữ",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.008 }],
+    "cooldown_days": 1512,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "DeDollarization_Gold_And_Crypto_Bid",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.14, "max": -0.07 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.06, "max": 0.14 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.05, "max": 0.12 } },
+          { "mode": "Temporary", "duration_days": 45, "target": "SellFee", "op": "Add", "value": { "dist": "Uniform", "min": 0.005, "max": 0.012 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "geo_energy_crunch",
+    "name": "Cú sốc Giá Năng lượng & Chi phí sản xuất",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.010 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 3,
+    "scenarios": [
+      {
+        "name": "Energy_Supply_Squeeze",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.12, "max": -0.06 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.07, "max": -0.03 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.20, "max": -0.10 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.03, "max": 0.07 } }
+        ],
+        "cascades": [{ "target_event_id": "macro_stagflation", "prob": 0.30, "delay_min_days": 60, "delay_max_days": 120 }]
+      }
+    ]
+  },
+  {
+    "id": "p_job_loss",
+    "name": "Mất việc / Giảm thu nhập cá nhân mùa Suy thoái",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.008 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Income_Reduced",
+        "weight": 0.65,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 180, "target": "PeriodicCash", "op": "Mul", "value": { "dist": "Uniform", "min": 0.40, "max": 0.65 } }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Full_Unemployment_Period",
+        "weight": 0.35,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 210, "target": "PeriodicCash", "op": "Set", "value": 0.0 }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "p_medical_emergency",
+    "name": "Biến cố Y tế / Chi phí gia đình rút vốn khẩn cấp",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.010 }, { "from_year": 20.0, "annual_prob": 0.025 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Emergency_Portfolio_Withdrawal",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "PortfolioNav", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.16, "max": -0.08 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "PeriodicCash", "op": "Mul", "value": { "dist": "Uniform", "min": 0.0, "max": 0.30 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "p_behavioral_panic",
+    "name": "Tâm lý Bầy đàn Hoảng loạn / Đóng băng tái cân bằng",
+    "prob_schedule": [],
+    "drawdown_trigger": { "asset": "Crypto", "drop_from_peak_pct": 0.68 },
+    "cooldown_days": 756,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Freeze_Sell_Rebalance",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 63, "target": "RebalanceEnabled", "op": "Set", "value": 0.0 }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "lt_climate_supply_shock",
+    "name": "Biến đổi Khí hậu / Bão lũ & Đứt gãy nông nghiệp - hạ tầng",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.008 }, { "from_year": 10.0, "annual_prob": 0.018 }, { "from_year": 25.0, "annual_prob": 0.035 }],
+    "cooldown_days": 756,
+    "max_triggers_per_sim": 4,
+    "scenarios": [
+      {
+        "name": "Physical_Climate_Shock",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.12, "max": -0.05 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.05, "max": -0.02 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.02, "max": 0.05 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "lt_aging_demographics",
+    "name": "Già hóa dân số Việt Nam & Chững tăng trưởng lao động",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.0 }, { "from_year": 15.0, "annual_prob": 0.025 }, { "from_year": 25.0, "annual_prob": 0.050 }],
+    "cooldown_days": 2520,
+    "max_triggers_per_sim": 1,
+    "scenarios": [
+      {
+        "name": "Structural_Equity_Drag",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Permanent", "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.006, "max": -0.002 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "lt_cyber_grid_outage",
+    "name": "Tấn công mạng diện rộng vào hạ tầng thanh toán / sàn giao dịch",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.010 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Payment_Freeze_And_PostOpen_Slippage",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 10, "target": "RebalanceEnabled", "op": "Set", "value": 0.0 },
+          { "mode": "Temporary", "duration_days": 30, "target": "SellFee", "op": "Set", "value": { "dist": "Uniform", "min": 0.04, "max": 0.09 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.08, "max": -0.04 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.18, "max": -0.08 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "lt_quantum_crypto_shock",
+    "name": "Chuyển đổi thuật toán Post-Quantum & Rủi ro mã hóa cũ",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.0 }, { "from_year": 12.0, "annual_prob": 0.008 }, { "from_year": 22.0, "annual_prob": 0.018 }],
+    "cooldown_days": 2520,
+    "max_triggers_per_sim": 1,
+    "scenarios": [
+      {
+        "name": "PQC_Softfork_Friction",
+        "weight": 0.70,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.25, "max": -0.12 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Crypto", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.50 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.02, "max": 0.06 } }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Key_Migration_Trust_Dip",
+        "weight": 0.30,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.40, "max": -0.24 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Crypto", "op": "Add", "value": { "dist": "Uniform", "min": -0.15, "max": -0.08 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.04, "max": 0.10 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "lt_pandemic_wave",
+    "name": "Dịch bệnh quy mô khu vực / toàn cầu (kiểu COVID 2020)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.010 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Regional_Lockdown",
+        "weight": 0.65,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.14, "max": -0.08 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "PeriodicCash", "op": "Mul", "value": { "dist": "Uniform", "min": 0.72, "max": 0.88 } }
+        ],
+        "cascades": []
+      },
+      {
+        "name": "Global_Pandemic_Lockdown",
+        "weight": 0.35,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Normal", "mean": -0.24, "std": 0.04, "min": -0.32, "max": -0.16 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.35, "max": -0.20 } },
+          { "mode": "Temporary", "duration_days": 63, "target": "CrisisCorrActive", "op": "Set", "value": 1.0 },
+          { "mode": "Temporary", "duration_days": 180, "target": "PeriodicCash", "op": "Mul", "value": { "dist": "Uniform", "min": 0.55, "max": 0.75 } }
+        ],
+        "cascades": [
+          { "target_event_id": "fin_liquidity_crunch", "prob": 0.35, "delay_min_days": 3, "delay_max_days": 14 },
+          { "target_event_id": "macro_qe_pivot_rescue", "prob": 0.85, "delay_min_days": 20, "delay_max_days": 60 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tail_double_dip",
+    "name": "Bẫy Suy thoái Kép (Double-Dip Recession)",
+    "prob_schedule": [],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Second_Leg_Recession",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.20, "max": -0.11 } },
+          { "mode": "Temporary", "duration_days": 210, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.10, "max": -0.05 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.26, "max": -0.14 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "PeriodicCash", "op": "Mul", "value": { "dist": "Uniform", "min": 0.65, "max": 0.85 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.03, "max": 0.08 } },
+          { "mode": "Temporary", "duration_days": 126, "target": "AssetSigma", "asset": "Cổ phiếu", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.45 } }
+        ],
+        "cascades": [{ "target_event_id": "macro_qe_pivot_rescue", "prob": 0.70, "delay_min_days": 45, "delay_max_days": 120 }]
+      }
+    ]
+  },
+  {
+    "id": "macro_qe_pivot_rescue",
+    "name": "NHNN / NHTW Hạ lãi suất 4 lần & Bơm thanh khoản cứu nguy (2020 / 2023)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.008 }],
+    "cooldown_days": 756,
+    "max_triggers_per_sim": 3,
+    "scenarios": [
+      {
+        "name": "Monetary_Easing_Pivot",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Temporary", "duration_days": 300, "target": "AssetMu", "asset": "Tiền gửi", "op": "Add", "value": { "dist": "Uniform", "min": -0.028, "max": -0.015 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": 0.03, "max": 0.08 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Normal", "mean": 0.11, "std": 0.03, "min": 0.05, "max": 0.18 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Vàng", "op": "Add", "value": { "dist": "Uniform", "min": 0.03, "max": 0.06 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Crypto", "op": "Add", "value": { "dist": "Uniform", "min": 0.08, "max": 0.18 } }
+        ],
+        "cascades": []
+      }
+    ]
+  },
+  {
+    "id": "macro_deflationary_bust",
+    "name": "Suy thoái Giảm phát & Cầu nội địa trì trệ",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.009 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "Demand_Deflation_Slump",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Normal", "mean": -0.12, "std": 0.035, "min": -0.20, "max": -0.06 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.10, "max": -0.05 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.22, "max": -0.10 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.08, "max": 0.02 } }
+        ],
+        "cascades": [{ "target_event_id": "macro_qe_pivot_rescue", "prob": 0.45, "delay_min_days": 90, "delay_max_days": 180 }]
+      }
+    ]
+  },
+  {
+    "id": "fin_domestic_re_bond_freeze",
+    "name": "Khủng hoảng Trái phiếu Doanh nghiệp & BĐS nội địa (kiểu 2022–2023)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.015 }],
+    "cooldown_days": 1260,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "VN_CBond_RealEstate_Freeze",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Cổ phiếu", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.20, "max": -0.10 } },
+          { "mode": "Temporary", "duration_days": 252, "target": "AssetMu", "asset": "Cổ phiếu", "op": "Add", "value": { "dist": "Uniform", "min": -0.11, "max": -0.05 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetSigma", "asset": "Cổ phiếu", "op": "Mul", "value": { "dist": "Uniform", "min": 1.25, "max": 1.45 } },
+          { "mode": "Instant", "target": "AssetValue", "asset": "Crypto", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.18, "max": -0.08 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "AssetMu", "asset": "Tiền gửi", "op": "Add", "value": { "dist": "Uniform", "min": 0.015, "max": 0.035 } },
+          { "mode": "Temporary", "duration_days": 180, "target": "PeriodicCash", "op": "Mul", "value": { "dist": "Uniform", "min": 0.75, "max": 0.90 } }
+        ],
+        "cascades": [
+          { "target_event_id": "fin_bank_run", "prob": 0.35, "delay_min_days": 14, "delay_max_days": 45 },
+          { "target_event_id": "macro_qe_pivot_rescue", "prob": 0.55, "delay_min_days": 120, "delay_max_days": 240 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "asset_gold_policy_squeeze",
+    "name": "Can thiệp bình ổn & Thu hẹp chênh lệch Vàng SJC – Thế giới (kiểu 2024)",
+    "prob_schedule": [{ "from_year": 0.0, "annual_prob": 0.018 }],
+    "cooldown_days": 1008,
+    "max_triggers_per_sim": 2,
+    "scenarios": [
+      {
+        "name": "SBV_SJC_Premium_Compression",
+        "weight": 1.0,
+        "modifiers": [
+          { "mode": "Instant", "target": "AssetValue", "asset": "Vàng", "op": "AddPct", "value": { "dist": "Uniform", "min": -0.16, "max": -0.07 } },
+          { "mode": "Temporary", "duration_days": 63, "target": "AssetSigma", "asset": "Vàng", "op": "Mul", "value": { "dist": "Uniform", "min": 1.15, "max": 1.35 } },
+          { "mode": "Temporary", "duration_days": 45, "target": "SellFee", "op": "Add", "value": { "dist": "Uniform", "min": 0.005, "max": 0.012 } }
+        ],
+        "cascades": []
+      }
+    ]
+  }
+]
+

@@ -1,0 +1,7 @@
+# Cloudflare Local Environment Variables (Example Template)
+# Copy this file to .dev.vars for local secrets
+APP_ENV=development
+API_BASE_URL=https://api.example.com
+SESSION_SECRET=your_dev_secret_key_change_me_123456
+# KV or D1 bindings if applicable:
+# DB_NAME=my-db

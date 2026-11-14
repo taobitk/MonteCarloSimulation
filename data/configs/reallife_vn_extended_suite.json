@@ -1,0 +1,157 @@
+{
+  "years": [10, 20, 40],
+  "sims": 60000,
+  "seed": 42,
+  "thread_seed_stride": 7919,
+  "sweeps": [
+    { "name": "1x_Real", "risk_mult": 1.0, "is_stress_test": false },
+    { "name": "1x_Stress", "risk_mult": 1.0, "is_stress_test": true },
+    { "name": "2x_Real", "risk_mult": 2.0, "is_stress_test": false },
+    { "name": "2x_Stress", "risk_mult": 2.0, "is_stress_test": true }
+  ],
+  "portfolios": [
+    {
+      "name": "STATIC_10_10_40_40",
+      "config": {
+        "initial_nav": 100.0, "periodic_cash": 10.0, "dca_interval_days": 21,
+        "is_dynamic_dca": false, "tolerance_band_pct": 0.10, "sell_fee_pct": 0.0,
+        "ruin_drawdown_pct": 0.20, "is_stress_test": false, "is_fat_tail": true,
+        "assets": [
+          { "name": "Tiền gửi", "weight": 0.10, "mu": 0.055, "sigma": 0.01 },
+          { "name": "Crypto",   "weight": 0.10, "mu": 0.250, "sigma": 0.60 },
+          { "name": "Vàng",     "weight": 0.40, "mu": 0.095, "sigma": 0.17 },
+          { "name": "Cổ phiếu", "weight": 0.40, "mu": 0.105, "sigma": 0.18 }
+        ],
+        "corr_matrix": [
+          [ 1.00, 0.00, 0.10, -0.15],
+          [ 0.00, 1.00, 0.20,  0.30],
+          [ 0.10, 0.20, 1.00,  0.05],
+          [-0.15, 0.30, 0.05,  1.00]
+        ],
+        "normal_corr": 0.10, "crisis_corr": 0.85, "crisis_threshold_pct": 0.15
+      }
+    },
+    {
+      "name": "DYN_25x4",
+      "config": {
+        "initial_nav": 100.0, "periodic_cash": 10.0, "dca_interval_days": 21,
+        "is_dynamic_dca": true, "tolerance_band_pct": 0.10, "sell_fee_pct": 0.02,
+        "ruin_drawdown_pct": 0.20, "is_stress_test": false, "is_fat_tail": true,
+        "assets": [
+          { "name": "Tiền gửi", "weight": 0.25, "mu": 0.055, "sigma": 0.01 },
+          { "name": "Crypto",   "weight": 0.25, "mu": 0.250, "sigma": 0.60 },
+          { "name": "Vàng",     "weight": 0.25, "mu": 0.095, "sigma": 0.17 },
+          { "name": "Cổ phiếu", "weight": 0.25, "mu": 0.105, "sigma": 0.18 }
+        ],
+        "corr_matrix": [
+          [ 1.00, 0.00, 0.10, -0.15],
+          [ 0.00, 1.00, 0.20,  0.30],
+          [ 0.10, 0.20, 1.00,  0.05],
+          [-0.15, 0.30, 0.05,  1.00]
+        ],
+        "normal_corr": 0.10, "crisis_corr": 0.85, "crisis_threshold_pct": 0.15
+      }
+    },
+    {
+      "name": "VN_SAFE_DYN",
+      "config": {
+        "initial_nav": 100.0, "periodic_cash": 10.0, "dca_interval_days": 21,
+        "is_dynamic_dca": true, "tolerance_band_pct": 0.10, "sell_fee_pct": 0.02,
+        "ruin_drawdown_pct": 0.20, "is_stress_test": false, "is_fat_tail": true,
+        "assets": [
+          { "name": "Tiền gửi", "weight": 0.35, "mu": 0.055, "sigma": 0.01 },
+          { "name": "Crypto",   "weight": 0.05, "mu": 0.250, "sigma": 0.60 },
+          { "name": "Vàng",     "weight": 0.30, "mu": 0.095, "sigma": 0.17 },
+          { "name": "Cổ phiếu", "weight": 0.30, "mu": 0.105, "sigma": 0.18 }
+        ],
+        "corr_matrix": [
+          [ 1.00, 0.00, 0.10, -0.15],
+          [ 0.00, 1.00, 0.20,  0.30],
+          [ 0.10, 0.20, 1.00,  0.05],
+          [-0.15, 0.30, 0.05,  1.00]
+        ],
+        "normal_corr": 0.10, "crisis_corr": 0.85, "crisis_threshold_pct": 0.15
+      }
+    },
+    {
+      "name": "VN_TRADITIONAL_DYN",
+      "config": {
+        "initial_nav": 100.0, "periodic_cash": 10.0, "dca_interval_days": 21,
+        "is_dynamic_dca": true, "tolerance_band_pct": 0.10, "sell_fee_pct": 0.02,
+        "ruin_drawdown_pct": 0.20, "is_stress_test": false, "is_fat_tail": true,
+        "assets": [
+          { "name": "Tiền gửi", "weight": 0.20, "mu": 0.055, "sigma": 0.01 },
+          { "name": "Vàng",     "weight": 0.40, "mu": 0.095, "sigma": 0.17 },
+          { "name": "Cổ phiếu", "weight": 0.40, "mu": 0.105, "sigma": 0.18 }
+        ],
+        "corr_matrix": [
+          [ 1.00, 0.10, -0.15],
+          [ 0.10, 1.00,  0.05],
+          [-0.15, 0.05,  1.00]
+        ],
+        "normal_corr": 0.0, "crisis_corr": 0.85, "crisis_threshold_pct": 0.15
+      }
+    },
+    {
+      "name": "VN_TRADITIONAL_STATIC",
+      "config": {
+        "initial_nav": 100.0, "periodic_cash": 10.0, "dca_interval_days": 21,
+        "is_dynamic_dca": false, "tolerance_band_pct": 0.10, "sell_fee_pct": 0.0,
+        "ruin_drawdown_pct": 0.20, "is_stress_test": false, "is_fat_tail": true,
+        "assets": [
+          { "name": "Tiền gửi", "weight": 0.20, "mu": 0.055, "sigma": 0.01 },
+          { "name": "Vàng",     "weight": 0.40, "mu": 0.095, "sigma": 0.17 },
+          { "name": "Cổ phiếu", "weight": 0.40, "mu": 0.105, "sigma": 0.18 }
+        ],
+        "corr_matrix": [
+          [ 1.00, 0.10, -0.15],
+          [ 0.10, 1.00,  0.05],
+          [-0.15, 0.05,  1.00]
+        ],
+        "normal_corr": 0.0, "crisis_corr": 0.85, "crisis_threshold_pct": 0.15
+      }
+    },
+    {
+      "name": "VN_GROWTH_BAND15",
+      "config": {
+        "initial_nav": 100.0, "periodic_cash": 10.0, "dca_interval_days": 21,
+        "is_dynamic_dca": true, "tolerance_band_pct": 0.15, "sell_fee_pct": 0.02,
+        "ruin_drawdown_pct": 0.20, "is_stress_test": false, "is_fat_tail": true,
+        "assets": [
+          { "name": "Tiền gửi", "weight": 0.05, "mu": 0.055, "sigma": 0.01 },
+          { "name": "Crypto",   "weight": 0.30, "mu": 0.250, "sigma": 0.60 },
+          { "name": "Vàng",     "weight": 0.20, "mu": 0.095, "sigma": 0.17 },
+          { "name": "Cổ phiếu", "weight": 0.45, "mu": 0.105, "sigma": 0.18 }
+        ],
+        "corr_matrix": [
+          [ 1.00, 0.00, 0.10, -0.15],
+          [ 0.00, 1.00, 0.20,  0.30],
+          [ 0.10, 0.20, 1.00,  0.05],
+          [-0.15, 0.30, 0.05,  1.00]
+        ],
+        "normal_corr": 0.10, "crisis_corr": 0.85, "crisis_threshold_pct": 0.15
+      }
+    },
+    {
+      "name": "VN_STARTER_CASHFLOW",
+      "config": {
+        "initial_nav": 20.0, "periodic_cash": 15.0, "dca_interval_days": 21,
+        "is_dynamic_dca": true, "tolerance_band_pct": 0.10, "sell_fee_pct": 0.02,
+        "ruin_drawdown_pct": 0.20, "is_stress_test": false, "is_fat_tail": true,
+        "assets": [
+          { "name": "Tiền gửi", "weight": 0.10, "mu": 0.055, "sigma": 0.01 },
+          { "name": "Crypto",   "weight": 0.20, "mu": 0.250, "sigma": 0.60 },
+          { "name": "Vàng",     "weight": 0.35, "mu": 0.095, "sigma": 0.17 },
+          { "name": "Cổ phiếu", "weight": 0.35, "mu": 0.105, "sigma": 0.18 }
+        ],
+        "corr_matrix": [
+          [ 1.00, 0.00, 0.10, -0.15],
+          [ 0.00, 1.00, 0.20,  0.30],
+          [ 0.10, 0.20, 1.00,  0.05],
+          [-0.15, 0.30, 0.05,  1.00]
+        ],
+        "normal_corr": 0.10, "crisis_corr": 0.85, "crisis_threshold_pct": 0.15
+      }
+    }
+  ]
+}
